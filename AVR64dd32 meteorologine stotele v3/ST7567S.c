@@ -203,9 +203,9 @@ void screen_write_text(char *text, uint8_t line, uint8_t start_pixel) {
  * 
  * @return The starting pixel for the text.
  */
-uint8_t calculate_start_pixel(char *text, uint8_t max_length, alignment_t alignment) {
+uint8_t calculate_start_pixel(char *text, alignment_t alignment) {
     uint8_t text_length = 0;
-    while (text[text_length] != '\0' && text_length < max_length) {
+    while (text[text_length] != '\0') {
         text_length++;
     }
 
@@ -233,12 +233,8 @@ uint8_t calculate_start_pixel(char *text, uint8_t max_length, alignment_t alignm
  * @param alignment The desired text alignment (left, center, right).
  */
 void screen_write_text_aligned(char *text, uint8_t line, alignment_t alignment) {
-    uint8_t max_chars = 128 / 6;  ///< Max characters per line
-    uint8_t start_pixel = calculate_start_pixel(text, max_chars, alignment);  ///< Calculate start pixel
-    screen_command(0xB0 | line);  ///< Set the page (line)
-    screen_command(0x10 | (start_pixel >> 4));  ///< Set high byte of column address
-    screen_command(0x00 | (start_pixel & 0x0F));  ///< Set low byte of column address
-    screen_draw_text(text, max_chars);  ///< Draw the text
+	uint8_t start_pixel = calculate_start_pixel(text, alignment);  ///< Calculate start pixel
+	screen_write_text(text, line, start_pixel);
 }
 
 /**
